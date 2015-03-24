@@ -3,18 +3,50 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.bedatadriven</groupId>
-  <artifactId>appengine-metrics-parent</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <groupId>com.bedatadriven.appengine.metrics</groupId>
+  <artifactId>parent</artifactId>
+  <version>0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
     <appengine.target.version>1.9.17a</appengine.target.version>
   </properties>
-  
+
+
+  <distributionManagement>
+    <repository>
+      <id>bedatadriven-oss</id>
+      <name>bedatadriven Open-Source releases</name>
+      <url>http://nexus.bedatadriven.com/content/repositories/oss-releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>bedatadriven-oss</id>
+      <name>bedatadriven Open-Source snapshots</name>
+      <url>http://nexus.bedatadriven.com/content/repositories/oss-snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+
   <modules>
-    <module>metrics</module>
+    <module>descriptors</module>
+    <module>collector</module>
     <module>test</module>
   </modules>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.apis</groupId>
+        <artifactId>google-api-services-cloudmonitoring</artifactId>
+        <version>v2beta2-rev5-1.20.0</version>
+       
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>15.0</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

@@ -4,21 +4,11 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 
-
-
-  <servlet>
-    <servlet-name>MetricDescriptorServlet</servlet-name>
-    <servlet-class>com.bedatadriven.appengine.metrics.MetricDescriptorServlet</servlet-class>
-  </servlet>
   
-  <servlet-mapping>
-    <servlet-name>MetricDescriptorServlet</servlet-name>
-    <url-pattern>/metrics</url-pattern>
-  </servlet-mapping>
 
   <filter>
     <filter-name>MetricFilter</filter-name>
-    <filter-class>com.bedatadriven.appengine.metrics.MetricFilter</filter-class>
+    <filter-class>com.bedatadriven.appengine.metrics.MetricRequestFilter</filter-class>
   </filter>
   
   <filter-mapping>

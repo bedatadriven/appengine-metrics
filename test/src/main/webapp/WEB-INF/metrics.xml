@@ -1,0 +1,10 @@
+<metrics>
+  <metric name="rpc/time">
+    <description>Execution time of RPC commands</description>
+    <metricType>gauge</metricType>
+    <valueType>distribution</valueType>
+    <labels>
+      <label key="command"/>
+    </labels>
+  </metric>
+</metrics>

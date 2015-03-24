@@ -1,7 +1,7 @@
 package com.bedatadriven.appengine.metrics;
 
 
-import com.bedatadriven.rebar.metrics.*;
+import com.bedatadriven.appengine.metrics.histogram.Histograms;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.google.common.base.Stopwatch;
@@ -19,25 +19,25 @@ public class RpcServlet extends HttpServlet {
     public static final String LATENCY_METRIC = MetricNames.customMetricName("rpc/time");
     public static final String COMMAND_LABEL = MetricNames.customLabel("command");
 
+    private final DistributionMetric latency;
+
+    public RpcServlet() {
+        this.latency = MetricsRegistry.INSTANCE.distribution(LATENCY_METRIC, 
+                Histograms.equalIntervals(0, TimeUnit.SECONDS.toMillis(5)));
+    }
+
     @Override
     public void init() throws ServletException {
-        Histogram.newHistogram(LATENCY_METRIC)
-                .defineLabel(COMMAND_LABEL, "RPC Command")
-                .useFixedBins(0, 30, 19)
-                .build();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String commandName = req.getRequestURI().substring("/rpc/".length());
-
-        HistogramRecorder recorder = MetricsRegistry.INSTANCE
-                .histogram(LATENCY_METRIC)
-                .get(TimeSeriesKey.label(COMMAND_LABEL, commandName));
+        
+        Distribution distribution = latency.get(TimeseriesKey.labeled(COMMAND_LABEL, commandName));
         
         Stopwatch stopwatch = Stopwatch.createStarted();
-        
 
         URLFetchService service = URLFetchServiceFactory.getURLFetchService();
         if(commandName.equals("ai")) {
@@ -46,8 +46,8 @@ public class RpcServlet extends HttpServlet {
             service.fetch(new URL("http://bedatadriven.com"));
         }
 
-        double elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS) / 1000d;
-        recorder.update(elapsed);
+        double elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        distribution.update(elapsed);
         
         resp.getWriter().println("Command " + commandName + " finished in " + elapsed + " ms");
     }

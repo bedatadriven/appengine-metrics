@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>appengine-metrics-parent</artifactId>
-    <groupId>com.bedatadriven</groupId>
-    <version>0.1-SNAPSHOT</version>
+    <groupId>com.bedatadriven.appengine.metrics</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -26,9 +26,21 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.bedatadriven</groupId>
-      <artifactId>appengine-metrics</artifactId>
+      <groupId>com.bedatadriven.appengine.metrics</groupId>
+      <artifactId>appengine-metrics-collector</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava-jdk5</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.bedatadriven.appengine.metrics</groupId>
+      <artifactId>appengine-metrics-descriptors</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -85,6 +97,8 @@
           </webResources>
         </configuration>
       </plugin>
+      
+
       <plugin>
         <groupId>com.google.appengine</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
@@ -92,9 +106,37 @@
         <configuration>
           <enableJarClasses>true</enableJarClasses>
         </configuration>
-      
       </plugin>
     </plugins>
   </build>
-
+  
+  <profiles>
+    <profile>
+      <id>update-metrics</id>
+      <build>
+        <plugins>
+          <!-- Update the metric descriptors as part of the deployment process -->
+          <!-- (Ideally this bit is included in the appengine maven plugin) -->
+          <plugin>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+                <configuration>
+                  <mainClass>com.bedatadriven.appengine.metrics.MetricUpdater</mainClass>
+                  <arguments>
+                    <argument>ai-capacity-test</argument>
+                    <argument>${basedir}/src/main/webapp/WEB-INF/metrics.xml</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  
 </project>
