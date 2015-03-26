@@ -8,7 +8,7 @@
 
   <filter>
     <filter-name>MetricFilter</filter-name>
-    <filter-class>com.bedatadriven.appengine.metrics.MetricRequestFilter</filter-class>
+    <filter-class>com.bedatadriven.appengine.metrics.MetricsRequestFilter</filter-class>
   </filter>
   
   <filter-mapping>
@@ -27,6 +27,15 @@
     <url-pattern>/rpc/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>MetricsServlet</servlet-name>
+    <servlet-class>com.bedatadriven.appengine.metrics.MetricsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>MetricsServlet</servlet-name>
+    <url-pattern>/metrics</url-pattern>
+  </servlet-mapping>
 
 
   <welcome-file-list>
