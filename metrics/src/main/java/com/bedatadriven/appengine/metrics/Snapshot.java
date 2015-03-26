@@ -10,11 +10,9 @@ import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 
 public class Snapshot {
@@ -28,6 +26,8 @@ public class Snapshot {
      * The number of milliseconds between flushes
      */
     private static final long RESOLUTION = TimeUnit.MINUTES.toMillis(1);
+    
+    private static final Logger LOGGER = Logger.getLogger(Snapshot.class.getName());
     
 
     private final MemcacheService memcacheService;
@@ -73,7 +73,7 @@ public class Snapshot {
                 snapshot.computeRates();
             }
             
-            snapshot.computeDistributions();
+            snapshot.computeTimerStatistics();
         }
         
         return snapshot.points;
@@ -160,25 +160,74 @@ public class Snapshot {
         }
     }
     
-    private void computeDistributions() {
+    private void computeTimerStatistics() {
+
+        // Doesn't seem to currently work
 
         for (RequestTimer timer : timers) {
+            
+            String keys[] = timer.getCacheKeys();
+            long counts[] = new long[keys.length];
+            
+            long totalCount = 0;
+            for(int i=0;i<keys.length;++i) {
+                counts[i] = getCount(keys[i]);
+                totalCount += counts[i];
+            }
 
-            List<PointDistributionBucket> buckets = Lists.newArrayList();
-            String[] keys = timer.getCacheKeys();
-            for(int i=0;i!=keys.length;++i) {
-                long count = getCount(keys[i]);
-                if(count > 0) {
-                    PointDistributionBucket bucket = new PointDistributionBucket();
-                    bucket.setCount(count);
-                    bucket.setLowerBound(timer.getLowerBound(i));
-                    bucket.setUpperBound(timer.getUpperBound(i));
-                    buckets.add(bucket);
+            LOGGER.fine(MetricNames.stripBaseName(timer.getKey().getMetricName()) + ": " + Arrays.toString(counts));
+            
+            if(totalCount > 0) {
+                for (TimerStatistic statistic : TimerStatistic.values()) {
+
+                    double estimate = statistic.compute(timer, counts);
+                    
+                    LOGGER.fine(MetricNames.stripBaseName(timer.getKey().getMetricName()) + 
+                            ": " + statistic.name() + " = "  + estimate);
+
+                    Point point = new Point();
+                    point.setStart(time);
+                    point.setEnd(time);
+                    point.setDoubleValue(estimate);
+
+                    TimeseriesPoint timeseriesPoint = new TimeseriesPoint();
+                    timeseriesPoint.setPoint(point);
+                    timeseriesPoint.setTimeseriesDesc(statistic.descriptor(timer.getKey()));
+                    timeseriesPoint.setPoint(point);
+
+                    points.add(timeseriesPoint);
                 }
             }
-            
-            PointDistribution distribution = new PointDistribution();
-            distribution.setBuckets(buckets);
+        }
+    }
+
+    private PointDistribution computeDistribution(RequestTimer timer) {
+        List<PointDistributionBucket> buckets = Lists.newArrayList();
+        String[] keys = timer.getCacheKeys();
+        for(int i=0;i!=keys.length;++i) {
+            long count = getCount(keys[i]);
+            if(count > 0) {
+                PointDistributionBucket bucket = new PointDistributionBucket();
+                bucket.setCount(count);
+                bucket.setLowerBound(timer.getLowerBound(i));
+                bucket.setUpperBound(timer.getUpperBound(i));
+                buckets.add(bucket);
+            }
+        }
+
+        PointDistribution distribution = new PointDistribution();
+        distribution.setBuckets(buckets);
+        return distribution;
+    }
+
+
+    private void computeDistributions() {
+
+        // Doesn't seem to currently work
+        
+        for (RequestTimer timer : timers) {
+
+            PointDistribution distribution = computeDistribution(timer);
             
             Point point = new Point();
             point.setStart(time);

@@ -29,7 +29,7 @@ public final class MetricsRegistry {
 
     private final ConcurrentMap<TimeseriesKey, Timeseries> timeseriesMap = new ConcurrentHashMap<TimeseriesKey, Timeseries>();
 
-    public Meter metric(String name, String label) {
+    public Meter meter(String name, String label) {
         TimeseriesKey key = key(name, label);
         Meter meter = (Meter) timeseriesMap.get(key);
         if(meter != null) {

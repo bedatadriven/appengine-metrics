@@ -41,7 +41,7 @@ public class RpcServlet extends HttpServlet {
         
         String commandName = req.getRequestURI().substring("/rpc/".length());
 
-        MetricsRegistry.INSTANCE.metric(COUNT_METRIC, commandName).mark();
+        MetricsRegistry.INSTANCE.meter(COUNT_METRIC, commandName).mark();
 
         RealDistribution latencyDistribution = latencyDistributions.get(commandName);
         long latency = Math.round(latencyDistribution.sample());

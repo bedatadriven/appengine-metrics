@@ -16,10 +16,10 @@ public class MeterIT {
         RateLimiter redRate = RateLimiter.create(redRatePerSecond);
         
         ExecutorService executor = Executors.newCachedThreadPool();
-        for(int i=0;i<blueRatePerSecond;++i) {
-            executor.submit(new RpcInvoker("blue", blueRate));
-        }
-        for(int i=0;i<redRatePerSecond;++i) {
+//        for(int i=0;i<blueRatePerSecond;++i) {
+//            executor.submit(new RpcInvoker("blue", blueRate));
+//        }
+        for(int i=0;i<(redRatePerSecond*5);++i) {
             executor.submit(new RpcInvoker("red", redRate));
         }
         

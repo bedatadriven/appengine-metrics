@@ -12,7 +12,6 @@ import com.google.api.services.cloudmonitoring.CloudMonitoring;
 import com.google.api.services.cloudmonitoring.CloudMonitoringScopes;
 import com.google.api.services.cloudmonitoring.model.*;
 import com.google.appengine.api.utils.SystemProperty;
-import com.google.common.collect.Lists;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,8 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +33,7 @@ import java.util.logging.Logger;
 public class MetricsServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(MetricsServlet.class.getName());
-    
+
     private final JsonFactory jsonFactory = new JacksonFactory();
 
     /**
@@ -61,7 +60,7 @@ public class MetricsServlet extends HttpServlet {
     private void query(String query, HttpServletResponse resp) throws IOException {
         CloudMonitoring client = createClient();
         ListTimeseriesResponse response = client.timeseries().list(getProjectId(), query, new DateTime(System.currentTimeMillis()).toStringRfc3339()).execute();
-        
+
         resp.setContentType("text/plain");
         resp.getWriter().write(jsonFactory.toPrettyString(response));
     }
@@ -79,7 +78,7 @@ public class MetricsServlet extends HttpServlet {
     private void sendPoints(List<TimeseriesPoint> points) throws IOException {
         CloudMonitoring client = createClient();
         updateMetricDescriptors(client);
-        
+
         writeTimeseries(client, points);
     }
 
@@ -108,27 +107,65 @@ public class MetricsServlet extends HttpServlet {
 
 
     private void updateMetricDescriptors(CloudMonitoring client) {
-        for (Map.Entry<TimeseriesKey, Timeseries> entry : MetricsRegistry.INSTANCE.getTimeseries()) {
-            Boolean created = registeredMetrics.get(entry.getKey().getMetricName());
+        for (Meter meter : MetricsRegistry.INSTANCE.meters()) {
+            Boolean created = registeredMetrics.get(meter.getKey().getMetricName());
             if (created != Boolean.TRUE) {
-                updateMetricDescriptor(client, entry.getKey(), entry.getValue());
+                updateMeterDescriptors(client, meter);
             }
+            registeredMetrics.put(meter.getKey().getMetricName(), true);
+
+        }
+        for (RequestTimer timer : MetricsRegistry.INSTANCE.timers()) {
+            Boolean created = registeredMetrics.get(timer.getKey().getMetricName());
+            if(created != Boolean.TRUE) {
+                updateTimerDescriptors(client, timer);
+            }
+            registeredMetrics.put(timer.getKey().getMetricName(), true);
         }
     }
 
-    private void updateMetricDescriptor(CloudMonitoring client, TimeseriesKey key, Timeseries value) {
 
-        List<MetricDescriptorLabelDescriptor> labels = Lists.newArrayList();
+    private void updateMeterDescriptors(CloudMonitoring client, Meter meter) {
 
-        MetricDescriptorLabelDescriptor kind = new MetricDescriptorLabelDescriptor();
-        kind.setKey(MetricNames.KIND_LABEL);
-        labels.add(kind);
+        MetricProperties properties = MetricProperties.get(meter.getKey().getMetricName());
 
         MetricDescriptor descriptor = new MetricDescriptor();
-        descriptor.setName(key.getMetricName());
-        descriptor.setLabels(labels);
-        descriptor.setTypeDescriptor(value.getTypeDescriptor());
+        descriptor.setName(meter.getKey().getMetricName());
+        descriptor.setDescription(properties.getDescription());
+        descriptor.setLabels(defaultLabels());
+        descriptor.setTypeDescriptor(meter.getTypeDescriptor());
 
+        updateDescriptor(client, descriptor);
+    }
+
+    private List<MetricDescriptorLabelDescriptor> defaultLabels() {
+        return Arrays.asList(
+                new MetricDescriptorLabelDescriptor()
+                        .setKey(MetricNames.KIND_LABEL));
+    }
+
+
+    private void updateTimerDescriptors(CloudMonitoring client, RequestTimer timer) {
+
+        MetricProperties properties = MetricProperties.get(timer.getKey());
+
+        for(TimerStatistic statistic : TimerStatistic.values()) {
+            MetricDescriptor descriptor = new MetricDescriptor();
+            descriptor.setName(statistic.metricName(timer.getKey()));
+            if(properties.getDescription() != null) {
+                descriptor.setDescription(String.format("%s (%s)", properties.getDescription(), 
+                        statistic.getDescription())); 
+            }
+            descriptor.setLabels(defaultLabels());
+            descriptor.setTypeDescriptor(new MetricDescriptorTypeDescriptor()
+                    .setMetricType("gauge")
+                    .setValueType("double"));
+
+            updateDescriptor(client, descriptor);
+        }
+    }
+
+    private void updateDescriptor(CloudMonitoring client, MetricDescriptor descriptor) {
         try {
             LOGGER.fine("Updating metric descriptor: " + jsonFactory.toPrettyString(descriptor));
         } catch (IOException ignored) {
@@ -136,25 +173,23 @@ public class MetricsServlet extends HttpServlet {
 
         try {
             MetricDescriptor response = client.metricDescriptors().create(getProjectId(), descriptor).execute();
-    
+
             LOGGER.fine("Successfully updated metric descriptor for " + response.getName());
-            
-            registeredMetrics.put(key.getMetricName(), true);
+
 
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to create metric descriptor for metric " + key.getMetricName(), e);
+            LOGGER.log(Level.SEVERE, "Failed to create metric descriptor for metric " + descriptor.getName(), e);
         }
     }
-    
 
     private void writeTimeseries(CloudMonitoring client, List<TimeseriesPoint> points) throws IOException {
         WriteTimeseriesRequest request = new WriteTimeseriesRequest();
         request.setTimeseries(points);
-        
+
         if(LOGGER.isLoggable(Level.FINE)) {
             LOGGER.log(Level.FINE, "Writing timeseries: " + jsonFactory.toPrettyString(request));
         }
-        
+
         try {
             client.timeseries().write(getProjectId(), request).execute();
         } catch (Exception e) {
