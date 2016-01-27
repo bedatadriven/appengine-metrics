@@ -3,14 +3,14 @@ package com.bedatadriven.appengine.metrics;
 
 import com.google.appengine.api.modules.ModulesService;
 import com.google.appengine.api.modules.ModulesServiceFactory;
-import com.google.appengine.api.urlfetch.*;
+import com.google.appengine.api.urlfetch.HTTPMethod;
+import com.google.appengine.api.urlfetch.HTTPRequest;
+import com.google.appengine.api.urlfetch.URLFetchService;
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -37,8 +37,8 @@ public final class MetricsRegistry {
         ModulesService modulesService = ModulesServiceFactory.getModulesService();
         try {
             return new URL("http://" + modulesService.getVersionHostname("statsd", null) + "/report");
-        } catch (MalformedURLException e) {
-            LOGGER.severe("Unexpected problem: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.severe("Could not initialize reporting URL: " + e.getMessage());
             return null;
         }
     }
@@ -56,6 +56,12 @@ public final class MetricsRegistry {
     }
     
     public void sendMessage(String message) {
+        // If we are not inside the AppEngine environment
+        // or the report URL could not be found, just skip this part
+        if(reportUrl == null) {
+            return;
+        }
+        
         HTTPRequest request = new HTTPRequest(reportUrl, HTTPMethod.POST);
         request.setPayload(message.getBytes(StandardCharsets.UTF_8));
         
