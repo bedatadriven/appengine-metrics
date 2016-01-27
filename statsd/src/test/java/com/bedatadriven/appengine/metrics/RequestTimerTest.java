@@ -1,17 +1,15 @@
 package com.bedatadriven.appengine.metrics;
 
-import com.bedatadriven.appengine.metrics.RequestTimer;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class RequestTimerTest {
     
     @Test
     public void bucketIndexTest() {
-        RequestTimer histogram = new RequestTimer(new TimeseriesKey("rpc"));
+        TimingStatistic histogram = new TimingStatistic("rpc");
 
         // Bucket bins are based pow of 2
         // 0 = [0, 2)

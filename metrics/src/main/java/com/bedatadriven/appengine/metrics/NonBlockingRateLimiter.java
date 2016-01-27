@@ -1,8 +1,5 @@
 package com.bedatadriven.appengine.metrics;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Ticker;
-
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -15,17 +12,10 @@ public class NonBlockingRateLimiter {
 
     private long interval;
     private final AtomicLong lastPermitTick;
-    private Ticker ticker;
-
-    @VisibleForTesting
-    public NonBlockingRateLimiter(Ticker ticker, long interval, TimeUnit timeUnit) {
-        this.ticker = ticker;
-        this.lastPermitTick = new AtomicLong(ticker.read());
-        this.interval = timeUnit.toNanos(interval);
-    }
 
     public NonBlockingRateLimiter(long interval, TimeUnit timeUnit) {
-        this(Ticker.systemTicker(), interval, timeUnit);
+        this.lastPermitTick = new AtomicLong(System.nanoTime());
+        this.interval = timeUnit.toNanos(interval);
     }
 
     /**
@@ -33,7 +23,7 @@ public class NonBlockingRateLimiter {
      */
     public boolean tryAcquire() {
         final long oldTick = lastPermitTick.get();
-        final long newTick = ticker.read();
+        final long newTick = System.nanoTime();
         final long timeSinceLastExecution = newTick - oldTick;
         if (timeSinceLastExecution > interval) {
             if (lastPermitTick.compareAndSet(oldTick, newTick)) {

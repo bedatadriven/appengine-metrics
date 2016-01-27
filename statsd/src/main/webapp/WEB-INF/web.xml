@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+
+  
+
+  <servlet>
+    <servlet-name>StartupHandler</servlet-name>
+    <servlet-class>com.bedatadriven.appengine.metrics.StartupServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>StartupHandler</servlet-name>
+    <url-pattern>/_ah/start</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ReportServlet</servlet-name>
+    <servlet-class>com.bedatadriven.appengine.metrics.ReportServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ReportServlet</servlet-name>
+    <url-pattern>/report</url-pattern>
+  </servlet-mapping>
+
+</web-app>

@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 
 public class RpcServlet extends HttpServlet {
     
-    public static final String COUNT_METRIC = MetricNames.qualifyCustomMetricName("test/rpc/count");
+    public static final String COUNT_METRIC = "test/rpc/count";
 
-    public static final String LATENCY_METRIC = MetricNames.qualifyCustomMetricName("test/rpc/time");
+    public static final String LATENCY_METRIC = "test/rpc/time";
 
     private static final Logger LOGGER = Logger.getLogger(RpcServlet.class.getName());
 
@@ -60,6 +60,4 @@ public class RpcServlet extends HttpServlet {
         resp.getWriter().println(String.format("Command %s latency: %d / %d ms", commandName,
                 latency, elapsed));
     }
-
-
 }

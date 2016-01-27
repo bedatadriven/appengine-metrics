@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="issues">
+    <option name="index">
+      <map>
+        <entry key="/Dummy.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/a.dummy">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/fragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$MAVEN_REPOSITORY$/com/bedatadriven/appengine/appengine-metrics/0.3-SNAPSHOT/appengine-metrics-0.3-SNAPSHOT.jar!/com/bedatadriven/appengine/metrics/Meter.class">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$MAVEN_REPOSITORY$/com/bedatadriven/appengine/appengine-metrics/0.3-SNAPSHOT/appengine-metrics-0.3-SNAPSHOT.jar!/com/bedatadriven/appengine/metrics/MetricsRegistry.class">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../activityinfo/server/src/script/databaseSetup.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../activityinfo/store/mysql/src/main/java/org/activityinfo/store/mysql/collections/BETA.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../activityinfo/store/mysql/src/test/java/org/activityinfo/store/mysql/DbUnit.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../activityinfo/store/query/src/main/java/org/activityinfo/store/query/impl/CollectionScanBatch.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/appengine-metrics-collector.iml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/pom.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/MessageBuffer.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/Meter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/MetricNames.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/MetricsRegistry.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/MetricsRequestFilter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/MetricsServlet.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/NonBlockingRateLimiter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/RequestTimer.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/SetCount.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/SetItem.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/SetSnapshot.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/SnapshotReader.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/SnapshotWriter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/main/java/com/bedatadriven/appengine/metrics/TimerStatistic.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/metrics/src/test/java/com/bedatadriven/appengine/metrics/RequestTimerTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/pom.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/pom.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/Aggregator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/CountStatistic.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/Histogram.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/MessageQueue.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/MetricsHandler.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/Protocol.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/ReportBuilder.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/ReportServlet.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/Reporte.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/Reporter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/RequestTimer.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/RequestTimerTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/Snapshot.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/StartupHandler.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/StartupServlet.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/TimerSnapshot.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/TimerStatistic.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/TimingHistogram.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/java/com/bedatadriven/appengine/metrics/TimingStatistic.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/webapp/WEB-INF/appengine-web.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/webapp/WEB-INF/logging.properties">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/main/webapp/WEB-INF/web.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/statsd/src/test/java/com/bedatadriven/appengine/metrics/RequestTimerTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/test/pom.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/test/src/main/java/com/bedatadriven/appengine/metrics/RpcServlet.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/test/src/main/webapp/WEB-INF/web.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/test/src/test/java/com/bedatadriven/appengine/metrics/MeterIT.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
