@@ -8,6 +8,7 @@ import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +34,8 @@ public final class MetricsRegistry {
 
     private final URLFetchService fetchService  = URLFetchServiceFactory.getURLFetchService();
     
+    private final StringBuilder BUFFER = new StringBuilder();
+    
     private static URL reportUrl() {
         ModulesService modulesService = ModulesServiceFactory.getModulesService();
         try {
@@ -56,18 +59,42 @@ public final class MetricsRegistry {
     }
     
     public void sendMessage(String message) {
+
         // If we are not inside the AppEngine environment
         // or the report URL could not be found, just skip this part
         if(reportUrl == null) {
             return;
         }
         
-        HTTPRequest request = new HTTPRequest(reportUrl, HTTPMethod.POST);
-        request.setPayload(message.getBytes(StandardCharsets.UTF_8));
-        
-        // Start async request but don't wait for result
-        // This is as close as we can get to UDP-style "fire and forget"
-        fetchService.fetchAsync(request);
+        synchronized (BUFFER) {
+            BUFFER.append(message);
+            BUFFER.append('\n');
+        }
     }
 
+    public void flush() {
+
+        LOGGER.fine("Flushing to statsd");
+        
+        String payload;
+        
+        synchronized (BUFFER) {
+            payload = BUFFER.toString();
+            BUFFER.setLength(0);
+        }
+        
+        if(payload.length() > 0) {
+
+            HTTPRequest request = new HTTPRequest(reportUrl, HTTPMethod.POST);
+            request.setPayload(payload.getBytes(StandardCharsets.UTF_8));
+
+            // Start async request but don't wait for result
+            // This is as close as we can get to UDP-style "fire and forget"
+            try {
+                fetchService.fetch(request);
+            } catch (Exception e) {
+                LOGGER.severe("Failed to post to statsd (" + payload.length() + " chars)");
+            }
+        }
+    }
 }

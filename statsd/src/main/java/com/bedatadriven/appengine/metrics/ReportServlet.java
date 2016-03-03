@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
@@ -33,9 +34,15 @@ public class ReportServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String message = CharStreams.toString(new InputStreamReader(req.getInputStream(), Charsets.UTF_8));
 
-    Aggregator.MESSAGE_QUEUE.add(message);
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream(), Charsets.UTF_8));
+    String line;
+    while((line=reader.readLine())!=null) {
+      if(line.length() > 0) {
+        Aggregator.MESSAGE_QUEUE.add(line);
+      }
+    }
     resp.setStatus(HttpServletResponse.SC_OK);
   }
 }

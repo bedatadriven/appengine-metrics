@@ -38,11 +38,16 @@ class ReportBuilder {
 
 
   private TimeseriesDescriptor keyToDescriptor(String key) {
-    String[] path = key.split("\\.");
-    StringBuilder metricName = new StringBuilder();
-    if(!key.startsWith(CUSTOM_METRIC_PREFIX)) {
-      metricName.append(CUSTOM_METRIC_PREFIX);
+
+    // Existing clients have already included the custom metrix prefix
+    // Strip it off
+    if(key.startsWith(CUSTOM_METRIC_PREFIX)) {
+      key = key.substring(CUSTOM_METRIC_PREFIX.length());
     }
+
+    String[] path = key.split("\\.");
+
+    StringBuilder metricName = new StringBuilder(CUSTOM_METRIC_PREFIX);
     Map<String, String> labels = new HashMap<>();
 
     for(String component : path) {
