@@ -62,7 +62,7 @@ class ReportBuilder {
         
         labels.put(labelKey, labelValue);
       } else {
-        if(metricName.length() > 0) {
+        if(metricName.length() > 0 && !component.startsWith("/")) {
           metricName.append("/");
         }
         metricName.append(component);
@@ -95,12 +95,17 @@ class ReportBuilder {
   }
 
 
+  /**
+   * Adds a count as a metered value in counts / second.
+   * @param key
+   * @param count
+   */
   public void addCount(String key, long count) {
 
     Point point = new Point();
     point.setStart(startTime);
     point.setEnd(endTime);
-    point.setDoubleValue((double) count);
+    point.setDoubleValue((double) count / 60.d);
 
     TimeseriesDescriptor descriptor = keyToDescriptor(key);
 
