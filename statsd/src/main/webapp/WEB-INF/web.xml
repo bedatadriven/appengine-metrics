@@ -26,4 +26,14 @@
     <url-pattern>/report</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>QueueServlet</servlet-name>
+    <servlet-class>com.bedatadriven.appengine.metrics.QueueStatsServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>QueueServlet</servlet-name>
+    <url-pattern>/queue</url-pattern>
+  </servlet-mapping>
+  
 </web-app>
