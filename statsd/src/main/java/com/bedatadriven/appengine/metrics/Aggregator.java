@@ -2,8 +2,7 @@ package com.bedatadriven.appengine.metrics;
 
 import com.google.common.collect.Maps;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -29,17 +28,26 @@ class Aggregator implements Runnable {
 
     @Override
     public void run() {
+        
+        List<String> toProcess = new ArrayList<>();
+        
         while(true) {
             String message;
             try {
                 message = MESSAGE_QUEUE.poll(timeUntilNextFlush(), TimeUnit.MILLISECONDS);
-
-
-                LOGGER.fine("Polled: " + message);
-
-
+                
                 if(message != null) {
                     processMessage(message);
+
+                    // Handle any backlog in the queue immediately
+                    try {
+                        MESSAGE_QUEUE.drainTo(toProcess);
+                        for (String i : toProcess) {
+                            processMessage(i);
+                        }
+                    } finally {
+                        toProcess.clear();
+                    }
                 }
 
                 long timeSinceLastFlush = System.currentTimeMillis() - lastFlushTime;
@@ -52,7 +60,7 @@ class Aggregator implements Runnable {
                 return;
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Exception processing queue: " + e.getMessage(), e);
-            }
+            } 
         }
     }
 
@@ -116,7 +124,6 @@ class Aggregator implements Runnable {
         // Create a new snapshot object with the current state
         // of all our statistics
         Snapshot snapshot = new Snapshot(timers.values(), counts.values());
-
 
         // Reset our statistics
         this.timers = new HashMap<>();
